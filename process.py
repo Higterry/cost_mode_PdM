@@ -12,17 +12,17 @@ import numpy as np
 
 
 """production features"""
-MTTF = 300 #mean time to failure
-N_h = 200 #annual production time
-T_m = 2 #time for maintenance
+MTTF = 3*50*7 #mean time to failure (days)
+N_h = 200 #annual production time (hours)
+T_m = 2 #time for maintenance (hours)
 
-C_rep = 20000 #replacement cost
-C_mt = 200 #cost for miantenance
-C_dt = 5000 # cost due to downtime
+C_rep = 20000 #replacement cost ($)
+C_mt = 200 #cost for miantenance ($)
+C_dt = 5000 # cost due to downtime (S)
 
-c_elec = 10 #electricy
-P_equp = 7.5 #power of the equipment
-effi = .9 #equipment efficiency
+c_elec = 10 #electricy ($)
+P_equp = 7.5 #power of the equipment (watts)
+effi = .9 #equipment efficiency (%)
 
 
 """model paprameters"""
@@ -67,10 +67,10 @@ for i in range(3):
     while True:
         while proc[-1]<main_thrd:
             temp = proc[-1]
-            proc.append(temp+gamma.rvs(a, scale=10))  #random gamma scale = 1/beta
+            proc.append(temp+gamma.rvs(a, scale=20))  #random gamma scale = 1/beta
             tm+=1
 
-        xr = beta.rvs(5*(np.exp(tm/100)-1),q,scale =3000) #state after maintenance
+        xr = beta.rvs(10*(np.exp(tm/100)-1),q,scale =3000) #state after maintenance
         # print(xr)
         proc.append(xr)
         for j in range(T_m):
@@ -97,7 +97,7 @@ c = C_mt
 peirod = 50
 fail_thred = 4000
 count_mt_pv = 0
-for i in range(10):
+for i in range(3):
     tm = 0
     thre = 1600
     xr = 0
@@ -111,7 +111,7 @@ for i in range(10):
             tm+=1
             if proc[-1]>fail_thred:
                 break
-        xr = beta.rvs(tm / 300 * 10, q, scale=4000)
+        xr = beta.rvs(5*(np.exp(tm/100)-1), q, scale=3000)
         if xr>3000:
             break
         proc.append(xr)
